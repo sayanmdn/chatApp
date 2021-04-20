@@ -1,22 +1,20 @@
-const { static } = require('express')
-const express = require('express')
-const socket = require('socket.io')
-let app = express()
+const express = require("express");
+const socket = require("socket.io");
 
-let server = app.listen(4000, ()=>{
-    console.log('Listening on port 4000')
-})
+var app = express();
 
-app.use(express.static('public'))
+var server = app.listen(4000, function () {
+  console.log("Listening to Port 4000");
+});
 
-const socketServer = socket(server)
+app.use(express.static("public"));
 
-socketServer.on('connection', (socket)=>{
+var upgradedServer = socket(server);
 
-    socket.on('sendingMessage',(data)=>{
-        // console.log('message from client : '+JSON.stringify(data))
-        socket.emit('broadcastMessage',data)
-    })
+upgradedServer.on("connection", function (socket) {
+  socket.on("sendingMessage", function (data) {
+    upgradedServer.emit("broadcastMessage", data);
+  });
 
-    console.log('new connection '+ socket.id)
-})
+  console.log("Websocket Connected", socket.id);
+});
